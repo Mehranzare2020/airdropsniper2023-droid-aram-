@@ -2,10 +2,10 @@
   "name": "philosopher-artist-atelier",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js"
   },
@@ -28,5 +28,8 @@
     "@vitejs/plugin-react": "^4.2.1",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

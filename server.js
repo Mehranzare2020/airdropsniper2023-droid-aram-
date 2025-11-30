@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -9,8 +10,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 
+// Serve Static files from React App (Vite build output)
+// This allows the Node server to serve the frontend directly
+app.use(express.static(path.join(__dirname, 'dist')));
+
 // Database Connection Logic
-// We use a function to get the pool so it handles connection constraints better in serverless
 let pool;
 
 function getDbPool() {
@@ -169,12 +173,16 @@ app.delete('/api/journal/:id', async (req, res) => {
   }
 });
 
-// For local development only
-if (require.main === module) {
-  const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`Server running locally on port ${PORT}`);
-  });
-}
+// --- CATCH ALL ROUTE FOR REACT (Must be last) ---
+// Any request that isn't an API request gets sent to the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+// Start Server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
